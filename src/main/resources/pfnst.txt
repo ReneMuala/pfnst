@@ -1,0 +1,17 @@
+[files]
+audio=mp3,m4a
+video=mp4
+photo=jpg,jpeg,png
+etc=pdf
+text=txt
+
+[directories]
+audio=./audio
+video=./video
+photo=./photo
+etc=./photo
+text=./txt
+
+[actions]
+makeDirectories=true
+useMove=true

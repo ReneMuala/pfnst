@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="pfnst:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/pfnst_jar</output-path>
+    <root id="archive" name="pfnst.jar">
+      <element id="module-output" name="pfnst" />
+    </root>
+  </artifact>
+</component>
