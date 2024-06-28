@@ -45,13 +45,24 @@ public class Reader {
 
 
     void parseActionsConfig(String line){
-        if(line.matches("(makeDirectories|useMove)\\s*=\\s*(true|false)")){
+        if(line.matches("(replaceExisting|makeDirectories|useMove)\\s*=\\s*(true|false)")){
             var configPair = line.split("\\s*=\\s*");
             var actionName = configPair[0].trim();
             var actionValue = Boolean.parseBoolean(configPair[1].trim());
             configuration.addActionConfiguration(actionName, actionValue);
         } else {
             Logger.error(String.format("Invalid action configuration '%s'", line));
+        }
+    }
+
+    void parseOptionsConfig(String line){
+        if(line.matches("(maxRenames)\\s*=\\s*(\\d+)")){
+            var configPair = line.split("\\s*=\\s*");
+            var optionName = configPair[0].trim();
+            var optionValue = Integer.parseInt(configPair[1].trim());
+            configuration.addOptionConfiguration(optionName, optionValue);
+        } else {
+            Logger.error(String.format("Invalid option configuration '%s'", line));
         }
     }
 
@@ -73,7 +84,7 @@ public class Reader {
             if(line.matches("#.*") || line.isEmpty())
                 continue;
             switch (line){
-                case "[files]", "[directories]", "[actions]":
+                case "[files]", "[directories]", "[actions]", "[options]":
                     configurationMode = line;
                     break;
                 default:
@@ -86,6 +97,9 @@ public class Reader {
                             break;
                         case "[actions]":
                             parseActionsConfig(line);
+                            break;
+                        case "[options]":
+                            parseOptionsConfig(line);
                             break;
                         default:
                             Logger.warn(String.format("No context provided for line: %s", line));

@@ -15,3 +15,7 @@ text=./txt
 [actions]
 makeDirectories=true
 useMove=true
+replaceExisting=false
+
+[options]
+maxRenames=1102

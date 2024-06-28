@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
 
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+
 public class Manager {
     Configuration configuration;
 
@@ -27,13 +29,14 @@ public class Manager {
     }
 
     String getFileCategory(String filename){
-        final String[] category = {new String()};
+        final String[] category = {""};
         if(!(filename.equals("pfnst.txt") || filename.equals(".pfnst.txt"))) {
             configuration.getFiles().forEach((String type, List<String> formats) -> {
                 for (var format :
                         formats) {
                     if(filename.endsWith(format)) {
                         category[0] = type;
+                        break;
                     }
                 }
             });
@@ -73,7 +76,26 @@ public class Manager {
                             Logger.message(String.format("(!) moving %s to %s", origin.getPath(), destination.getPath()));
                             Files.move(origin.toPath(),  destination.toPath());
                         } catch (IOException e) {
-                            Logger.error(String.format("Failed to move, reason: %s", e.getMessage()));
+                            Logger.error(String.format("Failed to move: %s", e.getLocalizedMessage()));
+                            if(configuration.getActions().get("replaceExisting")){
+                                try {
+                                    Files.move(origin.toPath(),  destination.toPath(), REPLACE_EXISTING);
+                                }  catch (IOException ex) {
+                                    Logger.error(String.format("Failed to move with replace option: %s", e.getLocalizedMessage()));
+                                }
+                            } else {
+                                for(int i = 1; i <  configuration.getOptions().get("maxRenames") + 1; i++){
+                                    try {
+                                        String newName = origin.getName();
+                                        newName = newName.substring(0, newName.lastIndexOf(".")) + String.format("(%d)", i) + newName.substring(newName.lastIndexOf("."));
+                                        destination = new File(directory.getPath()+"/"+newName);
+                                        Files.move(origin.toPath(),  destination.toPath());
+                                        break;
+                                    } catch (IOException ex) {
+                                        Logger.error(String.format("Failed to move renamed: %s", e.getLocalizedMessage()));
+                                    }
+                                }
+                            }
                         }
                     } else {
                         try {

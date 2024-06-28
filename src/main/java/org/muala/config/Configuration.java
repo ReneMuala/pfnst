@@ -1,5 +1,4 @@
 package org.muala.config;
-import org.muala.Main;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +13,7 @@ public class Configuration {
      * <h2>Example:</h2>
      * <pre>photo=jpg,jpeg,png</pre>
      */
-    final private Map<String, List<String>> files = new HashMap<>();;
+    final private Map<String, List<String>> files = new HashMap<>();
     public void addFileConfiguration(String formatName, List<String> formats){
         files.put(formatName, formats);
     }
@@ -25,7 +24,7 @@ public class Configuration {
      * Example:
      * photo=./photosFolder
      */
-    final private Map<String, String> directories = new HashMap<>();;
+    final private Map<String, String> directories = new HashMap<>();
 
     public void addDirectoriesConfiguration(String formatName, String directory){
         directories.put(formatName, directory);
@@ -38,9 +37,25 @@ public class Configuration {
      * Example:
      * makeDirectories=false
      */
-    final private Map<String, Boolean> actions = new HashMap<>();;
+    final private Map<String, Boolean> actions = new HashMap<>();
     public void addActionConfiguration(String action, Boolean value){
         actions.put(action, value);
+    }
+
+    public Map<String, Integer> getOptions() {
+        return options;
+    }
+
+    /**
+     * Stores information about options.
+     * Syntax:
+     * actionName = booleanValue
+     * Example:
+     * maxRenames=9999
+     */
+    final private Map<String, Integer> options = new HashMap<>();
+    public void addOptionConfiguration(String action, Integer value){
+        options.put(action, value);
     }
     public Map<String, List<String>> getFiles() {
         return files;
@@ -60,11 +75,14 @@ public class Configuration {
                 "files=" + files +
                 ", directories=" + directories +
                 ", actions=" + actions +
+                ", options=" + options +
                 '}';
     }
 
     public Configuration(){
         actions.put("makeDirectories", true);
         actions.put("useMove", true);
+        actions.put("replaceExisting", false);
+        options.put("maxRenames", 9999);
     }
 }
